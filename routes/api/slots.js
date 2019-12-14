@@ -26,41 +26,20 @@ router.get('/me', auth, async (req, res) => {
 });
 
 // @route   POST api/slots
-// @desc    Create or update user slots
+// @desc    Create or update slots
 // @access  Private
 router.post(
   '/',
   [
     auth,
     [
-      check('day', 'Day is required')
-        .not()
-        .isEmpty()
-        .isIn([
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-          'Sunday'
-        ])
-        .withMessage('Must be a valid week day'),
       check('total', 'Number of slots is required')
-        .not()
-        .isEmpty()
         .isNumeric()
         .withMessage('Must be a numeric value'),
-      check('opening', 'Opening time is required')
-        .not()
-        .isEmpty()
-        .isLength({ min: 4, max: 4 })
-        .withMessage('Must be with the format 0000'),
-      check('closing', 'Closing time is required')
-        .not()
-        .isEmpty()
-        .isLength({ min: 4, max: 4 })
-        .withMessage('Must be with the format 0000')
+      check('description')
+        .optional()
+        .isLength({ max: 400 })
+        .withMessage('Description must be 400 chars or less')
     ]
   ],
   async (req, res) => {
@@ -70,23 +49,14 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { day, total, opening, closing, status } = req.body;
-
-    const availSlot = { day, total, opening, closing };
-    if (status) availSlot.status = status;
+    const { total, description } = req.body;
 
     try {
       let slot = await Slot.findOne({ user: req.user.id });
 
       if (slot) {
-        const index = slot.available.findIndex(item => item.day === day);
-
-        if (index !== -1) {
-          slot.available[index] = availSlot;
-        } else {
-          slot.available.unshift(availSlot);
-        }
-
+        slot.total = total;
+        if (description) slot.description = description;
         slot = await Slot.findOneAndUpdate(
           { user: req.user.id },
           { $set: slot },
@@ -96,12 +66,9 @@ router.post(
       }
 
       // create
-      const slotFields = {};
-      slotFields.user = req.user.id;
-      slotFields.available = [];
-      slotFields.available.unshift(availSlot);
+      const slotFields = { total, user: req.user.id };
+      if (description) slotFields.description = description;
       slot = new Slot(slotFields);
-
       await slot.save();
       res.json(slot);
     } catch (error) {

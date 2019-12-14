@@ -1,4 +1,11 @@
 {
   "mongoURI": "mongodb+srv://adminAppointment:adminAppointment@appointmentapp-u7ka0.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtKey": "myjwtkey293929fjsd$$99"
+  "jwtKey": "myjwtkey293929fjsd$$99",
+  "appointmentStatus": [
+    "requested",
+    "accepted",
+    "rejected",
+    "completed",
+    "unknown"
+  ]
 }
