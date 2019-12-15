@@ -1,14 +1,49 @@
 import _ from 'lodash';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getAppointments } from '../../store/actions';
+import moment from 'moment';
+import { getAppointments, updateStatus } from '../../store/actions';
 import Slot from './Slot';
+import RenderLoading from '../layout/RenderLoading';
 
-const Index = ({ getAppointments, appointment: { appointments } }) => {
+const Index = ({
+  getAppointments,
+  appointment: { appointments },
+  updateStatus
+}) => {
+  const [requestedApp, setRequestedApp] = useState([]);
+  const [acceptedApp, setAcceptedApp] = useState([]);
+  const [updating, setUpdating] = useState();
+
   useEffect(() => {
     getAppointments();
   }, [getAppointments]);
+
+  useEffect(() => {
+    if (appointments !== null && appointments.length > 0) {
+      let updatedRequestedApp = [];
+      let updatedAcceptedApp = [];
+      _.map(appointments, value => {
+        if (value.status === 'requested') {
+          updatedRequestedApp.push(value);
+        } else if (value.status === 'accepted') {
+          updatedAcceptedApp.push(value);
+        }
+      });
+
+      setUpdating();
+      setRequestedApp(updatedRequestedApp);
+      setAcceptedApp(updatedAcceptedApp);
+    }
+  }, [appointments]);
+
+  const statusHandler = (id, status) => {
+    const values = { id, status };
+    setUpdating(id);
+    updateStatus(values);
+  };
+
   return (
     <section className='section'>
       <div className='container'>
@@ -17,9 +52,76 @@ const Index = ({ getAppointments, appointment: { appointments } }) => {
         </div>
         <div className='columns is-variable is-8'>
           <div className='column is-6'>
-            {_.map(appointments, (value, key) => (
+            {_.map(requestedApp, (value, key) => (
               <div key={key} className='box' style={{ marginBottom: '0.3rem' }}>
-                {value.status}
+                {updating === value._id ? (
+                  <RenderLoading />
+                ) : (
+                  <Fragment>
+                    <p>
+                      <span className='icon'>
+                        <i className='fa fa-file-alt'></i>
+                      </span>
+                      {value.buyer.name} has{' '}
+                      <span className='tag is-warning'>{value.status}</span> for
+                      a slot
+                      <span className='is-pulled-right is-grouped'>
+                        <button
+                          onClick={() => statusHandler(value._id, 'accepted')}
+                          className='button is-text is-small has-icons'
+                        >
+                          <span className='icon'>
+                            <i className='fa fa-pen'></i>
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => statusHandler(value._id, 'rejected')}
+                          className='button is-text is-small has-icons'
+                        >
+                          <span className='icon'>
+                            <i className='fa fa-times'></i>
+                          </span>
+                        </button>
+                      </span>
+                    </p>
+                    <p className='is-small has-text-grey-light'>
+                      @{moment(value.date).format('MMMM Do YYYY, h:mm:ss a')}
+                    </p>
+                  </Fragment>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className='column is-6'>
+            {_.map(acceptedApp, (value, key) => (
+              <div key={key} className='box' style={{ marginBottom: '0.3rem' }}>
+                {updating === value._id ? (
+                  <RenderLoading />
+                ) : (
+                  <Fragment>
+                    <p>
+                      <span className='icon'>
+                        <i className='fa fa-file-alt'></i>
+                      </span>
+                      {value.buyer.name} request has{' '}
+                      <span className='tag is-warning'>{value.status}</span> and
+                      is in progress
+                      <span className='is-pulled-right is-grouped'>
+                        <button
+                          onClick={() => statusHandler(value._id, 'completed')}
+                          className='button is-text is-small has-icons'
+                        >
+                          <span className='icon'>
+                            <i className='fa fa-check'></i>
+                          </span>
+                        </button>
+                      </span>
+                    </p>
+                    <p className='is-small has-text-grey-light'>
+                      @{moment(value.date).format('MMMM Do YYYY, h:mm:ss a')}
+                    </p>
+                  </Fragment>
+                )}
               </div>
             ))}
           </div>
@@ -31,11 +133,14 @@ const Index = ({ getAppointments, appointment: { appointments } }) => {
 
 Index.propTypes = {
   appointment: PropTypes.object.isRequired,
-  getAppointments: PropTypes.func.isRequired
+  getAppointments: PropTypes.func.isRequired,
+  updateStatus: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   appointment: state.appointment
 });
 
-export default connect(mapStateToProps, { getAppointments })(Index);
+export default connect(mapStateToProps, { getAppointments, updateStatus })(
+  Index
+);

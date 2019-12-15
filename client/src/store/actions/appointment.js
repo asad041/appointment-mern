@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { GET_SLOT, NO_SLOT, GET_APPOINTMENTS } from './types';
+import {
+  GET_SLOT,
+  NO_SLOT,
+  GET_APPOINTMENTS,
+  UPDATE_APPOINTMENT
+} from './types';
 import { setAlert } from './alert';
 
 export const getSlot = () => async disptach => {
@@ -20,17 +25,41 @@ export const getSlot = () => async disptach => {
   }
 };
 
-export const getAppointments = () => async disptach => {
+export const getAppointments = () => async dispatch => {
   try {
     const response = await axios.get('/api/appointment/seller');
-    disptach({
+    dispatch({
       type: GET_APPOINTMENTS,
       payload: response.data
     });
   } catch (error) {
     const { data } = error.response;
     if (data && data.msg) {
-      disptach(setAlert(data.msg, 'danger'));
+      dispatch(setAlert(data.msg, 'danger'));
+    }
+  }
+};
+
+export const updateStatus = values => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const body = JSON.stringify(values);
+    const response = await axios.put('/api/appointment/update', body, config);
+    dispatch({
+      type: UPDATE_APPOINTMENT,
+      payload: response.data
+    });
+  } catch (error) {
+    const { data } = error.response;
+    if (data && data.msg) {
+      dispatch(setAlert(data.msg, 'danger'));
+    } else {
+      dispatch(setAlert(error.message, 'danger'));
     }
   }
 };

@@ -10,3 +10,4 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 export const GET_SLOT = 'GET_SLOT';
 export const NO_SLOT = 'NO_SLOT';
 export const GET_APPOINTMENTS = 'GET_APPOINTMENTS';
+export const UPDATE_APPOINTMENT = 'UPDATE_APPOINTMENT';

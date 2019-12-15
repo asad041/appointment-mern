@@ -1,4 +1,9 @@
-import { GET_SLOT, NO_SLOT, GET_APPOINTMENTS } from '../actions';
+import {
+  GET_SLOT,
+  NO_SLOT,
+  GET_APPOINTMENTS,
+  UPDATE_APPOINTMENT
+} from '../actions';
 
 const inititalState = {
   appointments: [],
@@ -28,6 +33,15 @@ export default (state = inititalState, action) => {
       return {
         ...state,
         appointments: payload,
+        loading: false
+      };
+
+    case UPDATE_APPOINTMENT:
+      return {
+        ...state,
+        appointments: state.appointments.map(appointment =>
+          appointment._id === payload._id ? payload : appointment
+        ),
         loading: false
       };
 
