@@ -16,7 +16,9 @@ router.get('/me', auth, async (req, res) => {
     ]);
 
     if (!slot) {
-      return res.status(400).json({ msg: 'There is no slot for this user' });
+      return res
+        .status(400)
+        .json({ msg: 'Available slot configuration not found' });
     }
     res.json(slot);
   } catch (error) {

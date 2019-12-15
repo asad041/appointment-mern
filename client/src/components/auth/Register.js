@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { register } from '../../store/actions';
@@ -25,8 +25,9 @@ const Register = ({
     <div className='container'>
       <section className='section'>
         <div className='columns'>
-          <div className='column is-4 is-offset-4'>
+          <div className='column is-6 is-offset-3'>
             <div className='box'>
+              <h3 className='has-text-centered subtitle'>Create an account</h3>
               <form onSubmit={handleSubmit(values => register(values))}>
                 {_.map(REGISTER_FIELDS, (value, key) => (
                   <Field
@@ -44,6 +45,11 @@ const Register = ({
                   valid={valid}
                   submitting={submitting}
                 />
+                <div className='field'>
+                  <div className='control is-flex-center is-small'>
+                    <Link to='/login'>Already have an account?</Link>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
