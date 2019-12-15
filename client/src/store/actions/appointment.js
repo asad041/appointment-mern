@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   GET_SLOT,
+  SAVE_SLOT,
   NO_SLOT,
   GET_APPOINTMENTS,
   UPDATE_APPOINTMENT
@@ -20,6 +21,30 @@ export const getSlot = () => async disptach => {
       disptach(setAlert(data.msg, 'danger'));
     }
     disptach({
+      type: NO_SLOT
+    });
+  }
+};
+
+export const saveSlot = values => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    const body = JSON.stringify(values);
+    const response = await axios.post('/api/slots', body, config);
+    dispatch({
+      type: SAVE_SLOT,
+      payload: response.data
+    });
+  } catch (error) {
+    const { data } = error.response;
+    if (data && data.msg) {
+      dispatch(setAlert(data.msg, 'danger'));
+    }
+    dispatch({
       type: NO_SLOT
     });
   }

@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { getSlot } from '../../store/actions';
+import { getSlot, saveSlot } from '../../store/actions';
 import { SLOT_FIELDS } from '../helper/fields';
 import { validate } from '../helper/validator';
 import { inputFieldWithIcon } from '../layout/FormFields';
@@ -12,15 +12,21 @@ import SubmitButton from '../layout/SubmitButton';
 
 const Slot = ({
   getSlot,
+  saveSlot,
   appointment: { loading, slot },
   handleSubmit,
   submitting,
-  valid
+  valid,
+  availableSlots
 }) => {
   const [edit, setEdit] = useState(false);
   useEffect(() => {
     getSlot();
   }, [getSlot]);
+
+  useEffect(() => {
+    setEdit(false);
+  }, [slot]);
 
   const editHandler = () => {
     setEdit(true);
@@ -69,7 +75,7 @@ const Slot = ({
               {!edit ? (
                 <Fragment>
                   <p>
-                    <span>Available slots: NA</span>
+                    <span>Available slots: {slot.total - availableSlots}</span>
                     <span className='is-pulled-right'>
                       Total Slots: {slot.total}
                     </span>
@@ -77,7 +83,10 @@ const Slot = ({
                   <p className='has-text-grey is-small'>{slot.description}</p>
                 </Fragment>
               ) : (
-                <form onSubmit={handleSubmit}>
+                <form
+                  onSubmit={handleSubmit(values => saveSlot(values))}
+                  style={{ marginTop: '10px' }}
+                >
                   {_.map(SLOT_FIELDS, (value, key) => (
                     <Field
                       key={key}
@@ -106,6 +115,7 @@ const Slot = ({
 
 Slot.propTypes = {
   getSlot: PropTypes.func.isRequired,
+  saveSlot: PropTypes.func.isRequired,
   appointment: PropTypes.object.isRequired
 };
 
@@ -121,4 +131,6 @@ const mapStateToProps = state => ({
   initialValues: state.appointment.slot
 });
 
-export default connect(mapStateToProps, { getSlot })(SlotWithReduxForm);
+export default connect(mapStateToProps, { getSlot, saveSlot })(
+  SlotWithReduxForm
+);

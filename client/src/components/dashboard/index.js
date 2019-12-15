@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { getAppointments, updateStatus } from '../../store/actions';
 import Slot from './Slot';
+import Alert from '../layout/Alert';
 import RenderLoading from '../layout/RenderLoading';
 
 const Index = ({
@@ -48,10 +49,22 @@ const Index = ({
     <section className='section'>
       <div className='container'>
         <div className='columns is-variable is-8'>
-          <Slot />
+          <Alert />
+          <Slot availableSlots={acceptedApp.length} />
         </div>
         <div className='columns is-variable is-8'>
           <div className='column is-6'>
+            <div className='box' style={{ marginBottom: '0.3rem' }}>
+              <p className='has-text-weight-bold'>
+                <span className='icon'>
+                  <i className='fa fa-bell'></i>
+                </span>
+                Appointment requests
+              </p>
+              <p className='is-small has-text-grey-light'>
+                To mark as 'accepted', click the pen icon
+              </p>
+            </div>
             {_.map(requestedApp, (value, key) => (
               <div key={key} className='box' style={{ marginBottom: '0.3rem' }}>
                 {updating === value._id ? (
@@ -62,7 +75,7 @@ const Index = ({
                       <span className='icon'>
                         <i className='fa fa-file-alt'></i>
                       </span>
-                      {value.buyer.name} has{' '}
+                      <u>{value.buyer.name}</u> has{' '}
                       <span className='tag is-warning'>{value.status}</span> for
                       a slot
                       <span className='is-pulled-right is-grouped'>
@@ -93,6 +106,17 @@ const Index = ({
             ))}
           </div>
           <div className='column is-6'>
+            <div className='box' style={{ marginBottom: '0.3rem' }}>
+              <p className='has-text-weight-bold'>
+                <span className='icon'>
+                  <i className='fa fa-calendar-check'></i>
+                </span>
+                Accepted appointments
+              </p>
+              <p className='is-small has-text-grey-light'>
+                To mark as 'completed', click the check icon
+              </p>
+            </div>
             {_.map(acceptedApp, (value, key) => (
               <div key={key} className='box' style={{ marginBottom: '0.3rem' }}>
                 {updating === value._id ? (
@@ -101,10 +125,10 @@ const Index = ({
                   <Fragment>
                     <p>
                       <span className='icon'>
-                        <i className='fa fa-file-alt'></i>
+                        <i className='fa fa-pen'></i>
                       </span>
-                      {value.buyer.name} request has{' '}
-                      <span className='tag is-warning'>{value.status}</span> and
+                      <u>{value.buyer.name}</u> request has{' '}
+                      <span className='tag is-primary'>{value.status}</span> and
                       is in progress
                       <span className='is-pulled-right is-grouped'>
                         <button

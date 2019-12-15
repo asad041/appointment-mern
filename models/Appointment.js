@@ -16,7 +16,7 @@ const AppointmentSchema = mongoose.Schema({
   status: {
     type: String,
     enum: config.get('appointmentStatus'),
-    default: 'Requested'
+    default: 'requested'
   },
   date: {
     type: Date,

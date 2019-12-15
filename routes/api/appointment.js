@@ -91,7 +91,7 @@ router.post(
 
       const appointments = await Appointment.find({
         seller: seller,
-        status: 'Accepted'
+        status: 'accepted'
       });
 
       if (appointments.length >= slot.total) {

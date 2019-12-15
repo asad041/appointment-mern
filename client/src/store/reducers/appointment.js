@@ -1,5 +1,6 @@
 import {
   GET_SLOT,
+  SAVE_SLOT,
   NO_SLOT,
   GET_APPOINTMENTS,
   UPDATE_APPOINTMENT
@@ -16,6 +17,7 @@ export default (state = inititalState, action) => {
   const { type, payload } = action;
   switch (type) {
     case GET_SLOT:
+    case SAVE_SLOT:
       return {
         ...state,
         slot: payload,
