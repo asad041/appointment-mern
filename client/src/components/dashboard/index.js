@@ -48,8 +48,8 @@ const Index = ({
   return (
     <section className='section'>
       <div className='container'>
+        <Alert />
         <div className='columns is-variable is-8'>
-          <Alert />
           <Slot availableSlots={acceptedApp.length} />
         </div>
         <div className='columns is-variable is-8'>

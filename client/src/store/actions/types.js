@@ -11,4 +11,5 @@ export const GET_SLOT = 'GET_SLOT';
 export const SAVE_SLOT = 'SAVE_SLOT';
 export const NO_SLOT = 'NO_SLOT';
 export const GET_APPOINTMENTS = 'GET_APPOINTMENTS';
+export const RESET_APPOINTMENTS = 'RESET_APPOINTMENTS';
 export const UPDATE_APPOINTMENT = 'UPDATE_APPOINTMENT';

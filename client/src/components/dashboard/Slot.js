@@ -40,7 +40,7 @@ const Slot = ({
     <Fragment>
       {loading && <RenderLoading />}
       <div className='column'>
-        {slot && slot !== null && (
+        {!loading && (
           <div className='message is-dark'>
             <div className='message-body'>
               <p style={{ marginBottom: '5px' }}>
@@ -73,15 +73,21 @@ const Slot = ({
                 </span>
               </p>
               {!edit ? (
-                <Fragment>
-                  <p>
-                    <span>Available slots: {slot.total - availableSlots}</span>
-                    <span className='is-pulled-right'>
-                      Total Slots: {slot.total}
-                    </span>
-                  </p>
-                  <p className='has-text-grey is-small'>{slot.description}</p>
-                </Fragment>
+                slot !== null ? (
+                  <Fragment>
+                    <p>
+                      <span>
+                        Available slots: {slot.total - availableSlots}
+                      </span>
+                      <span className='is-pulled-right'>
+                        Total Slots: {slot.total}
+                      </span>
+                    </p>
+                    <p className='has-text-grey is-small'>{slot.description}</p>
+                  </Fragment>
+                ) : (
+                  <p>Config your appointment slots.</p>
+                )
               ) : (
                 <form
                   onSubmit={handleSubmit(values => saveSlot(values))}

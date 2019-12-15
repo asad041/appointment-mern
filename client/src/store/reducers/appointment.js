@@ -3,7 +3,8 @@ import {
   SAVE_SLOT,
   NO_SLOT,
   GET_APPOINTMENTS,
-  UPDATE_APPOINTMENT
+  UPDATE_APPOINTMENT,
+  RESET_APPOINTMENTS
 } from '../actions';
 
 const inititalState = {
@@ -46,6 +47,9 @@ export default (state = inititalState, action) => {
         ),
         loading: false
       };
+
+    case RESET_APPOINTMENTS:
+      return inititalState;
 
     default:
       return state;

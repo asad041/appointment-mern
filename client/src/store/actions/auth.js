@@ -7,7 +7,8 @@ import {
   LOAD_USER,
   AUTH_ERROR,
   LOGIN_SUCCESS,
-  LOGIN_FAIL
+  LOGIN_FAIL,
+  RESET_APPOINTMENTS
 } from './types';
 import { SubmissionError } from 'redux-form';
 import { setAlert } from './alert';
@@ -83,5 +84,6 @@ export const login = values => async disptach => {
 };
 
 export const logout = () => dispatch => {
+  dispatch({ type: RESET_APPOINTMENTS });
   dispatch({ type: LOGOUT });
 };

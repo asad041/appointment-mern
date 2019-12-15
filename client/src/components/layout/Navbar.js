@@ -65,6 +65,11 @@ const Navbar = ({ logout, auth: { isAuthenticated, loading } }) => {
           </Link>
         </div>
         <div className='navbar-menu'>
+          <div className='navbar-start'>
+            <Link to='/all' className='navbar-item'>
+              All requests
+            </Link>
+          </div>
           <div className='navbar-end'>
             <div className='navbar-item'>
               {!loading && (isAuthenticated ? authLinks : guestLinks)}

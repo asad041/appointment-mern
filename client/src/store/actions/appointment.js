@@ -7,8 +7,12 @@ import {
   UPDATE_APPOINTMENT
 } from './types';
 import { setAlert } from './alert';
+import setAuthToken from '../../utils/setAuthToken';
 
 export const getSlot = () => async disptach => {
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+  }
   try {
     const response = await axios.get('/api/slots/me');
     disptach({
@@ -27,6 +31,9 @@ export const getSlot = () => async disptach => {
 };
 
 export const saveSlot = values => async dispatch => {
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+  }
   try {
     const config = {
       headers: {
@@ -51,6 +58,9 @@ export const saveSlot = values => async dispatch => {
 };
 
 export const getAppointments = () => async dispatch => {
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+  }
   try {
     const response = await axios.get('/api/appointment/seller');
     dispatch({
@@ -66,6 +76,9 @@ export const getAppointments = () => async dispatch => {
 };
 
 export const updateStatus = values => async dispatch => {
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+  }
   try {
     const config = {
       headers: {
