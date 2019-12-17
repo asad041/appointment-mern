@@ -1,6 +1,6 @@
 {
   "mongoURI": "",
-  "jwtKey": "myjwtkey293929fjsd$$99",
+  "jwtKey": "",
   "appointmentStatus": [
     "requested",
     "accepted",

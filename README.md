@@ -18,6 +18,10 @@ npm install
 npm run dev
 ```
 
+## API POINTS
+
+All the API request points [Appointment Booking API](https://documenter.getpostman.com/view/262459/SWECWF1i?version=latest)
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
