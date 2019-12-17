@@ -4,7 +4,7 @@ const router = express.Router();
 
 const auth = require('../../middleware/auth');
 const Slot = require('../../models/Slot');
-const User = require('../../models/User');
+const Appointment = require('../../models/Appointment');
 
 // @route   GET api/slots/me
 // @desc    Get current users profile
@@ -85,7 +85,7 @@ router.post(
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const slots = await Slot.find().populate('user', ['name']);
+    const slots = await Slot.find().populate('user', ['name', 'email']);
     res.json(slots);
   } catch (error) {
     console.log(error.message);
@@ -95,18 +95,25 @@ router.get('/', async (req, res) => {
 
 // @route   GET api/slots/user/:user_id
 // @desc    Get slot by user ID
-// @access  Public
+// @access  Private
 router.get('/user/:user_id', async (req, res) => {
   try {
     const slot = await Slot.findOne({
       user: req.params.user_id
-    }).populate('user', ['name']);
+    }).populate('user', ['name', 'email']);
 
     if (!slot) {
       return res.status(400).json({ msg: 'Slot not found' });
     }
 
-    res.json(slot);
+    const appointments = await Appointment.find({
+      seller: req.params.user_id,
+      status: 'accepted'
+    });
+
+    const accepted = appointments.length;
+
+    res.json({ slot, accepted });
   } catch (error) {
     console.log(error.message);
     if (error.kind === 'ObjectId') {

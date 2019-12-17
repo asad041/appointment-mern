@@ -77,7 +77,9 @@ router.post(
     const { seller, description } = req.body;
 
     if (req.user.id === seller) {
-      return res.status(400).json({ msg: 'Slot error, please try again' });
+      return res
+        .status(400)
+        .json({ msg: "You can't allocate slot to yourself" });
     }
 
     try {
