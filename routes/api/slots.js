@@ -5,6 +5,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const Slot = require('../../models/Slot');
 const Appointment = require('../../models/Appointment');
+const User = require('../../models/User');
 
 // @route   GET api/slots/me
 // @desc    Get current users profile
@@ -73,6 +74,52 @@ router.post(
       slot = new Slot(slotFields);
       await slot.save();
       res.json(slot);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Server error');
+    }
+  }
+);
+
+// @route   POST api/search
+// @desc    Get all matched user and slots
+// @access  Public
+router.post(
+  '/search',
+  [
+    check('name', 'User name is required')
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { name } = req.body;
+
+      const user = await User.findOne({
+        name: { $regex: new RegExp(name, 'ig') }
+      });
+
+      if (!user) {
+        return res.status(400).json({ msg: 'No seller found!' });
+      }
+
+      const slots = await Slot.find({ user: user._id }).populate('user', [
+        'name',
+        'email',
+        'level'
+      ]);
+
+      // if (slots.length < 1) {
+      //   return res.status(400).json({ msg: 'No sellers found' });
+      // }
+
+      res.json(slots);
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Server error');
